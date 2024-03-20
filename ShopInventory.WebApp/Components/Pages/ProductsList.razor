@@ -1,0 +1,40 @@
+﻿@page "/products"
+@inject IViewListOfProductsUseCase ViewListOfProductsUseCase
+@inject NavigationManager NavigationManager
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+            <th>Preço</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (products != null && products.Count > 0)
+        {
+            foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Price.ToString("c")</td>
+                    <td>
+                        <button type="button" class="btn btn-light">Test</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<Artigo> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = (await ViewListOfProductsUseCase.Execute())!.ToList();     
+    }
+}
