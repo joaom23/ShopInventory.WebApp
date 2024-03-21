@@ -12,6 +12,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IViewListOfProductsUseCase, ViewListOfProductsUseCase>();
+builder.Services.AddScoped<IViewProductsCountUseCase, ViewProductsCountUseCase>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

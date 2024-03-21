@@ -1,40 +1,64 @@
 ﻿@page "/products"
-@inject IViewListOfProductsUseCase ViewListOfProductsUseCase
-@inject NavigationManager NavigationManager
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Quantidade</th>
-            <th>Preço</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (products != null && products.Count > 0)
-        {
-            foreach (var product in products)
+@inject IViewListOfProductsUseCase ViewListOfProductsUseCase
+@inject IViewProductsCountUseCase ViewProductsCountUseCase
+@inject NavigationManager NavigationManager
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<SearchProductComponent OnSearchProduct="SeachProduct"></SearchProductComponent>
+
+@if(products == null)
+{
+    <div class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Total: @productsCount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
             {
                 <tr>
                     <td>@product.Name</td>
                     <td>@product.Quantity</td>
                     <td>@product.Price.ToString("c")</td>
                     <td>
-                        <button type="button" class="btn btn-light">Test</button>
+                        <button type="button" class="btn btn-light">Adicionar</button>
                     </td>
                 </tr>
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table> 
+}
 
 
 @code {
-    private List<Artigo> products = new();
+
+    private List<Artigo>? products;
+    private int? productsCount;
 
     protected override async Task OnInitializedAsync()
     {
-        products = (await ViewListOfProductsUseCase.Execute())!.ToList();     
+        if(productsCount == null)
+        {
+            productsCount = await ViewProductsCountUseCase.ExecuteAsync(); 
+        }
+
+        products = (await ViewListOfProductsUseCase.ExecuteAsync())!.ToList();
+    }
+
+    private async Task SeachProduct(string name)
+    {
+        products = (await ViewListOfProductsUseCase.ExecuteAsync(name))!.ToList();
     }
 }

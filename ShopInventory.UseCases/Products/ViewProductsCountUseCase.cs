@@ -4,17 +4,17 @@ using ShopInventory.UseCases.Products.Interfaces;
 
 namespace ShopInventory.UseCases.Products;
 
-public class ViewListOfProductsUseCase : IViewListOfProductsUseCase
+public class ViewProductsCountUseCase : IViewProductsCountUseCase
 {
     private readonly IProductsRepository _httpClient;
 
-    public ViewListOfProductsUseCase(IProductsRepository httpClient)
+    public ViewProductsCountUseCase(IProductsRepository httpClient)
     {
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<Artigo>?> ExecuteAsync(string? name = null)
+    public async Task<int> ExecuteAsync()
     {
-        return await _httpClient.GetArtigosAsync(name);
+        return await _httpClient.GetArtigosCountAsync();
     }
 }
