@@ -15,8 +15,8 @@ public class ProductsRepository : IProductsRepository
 
     public async Task<IEnumerable<Artigo>?> GetArtigosAsync()
     {
-        //var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos");
-        var response = await _httpClient.GetAsync($"http://localhost:8080/artigos");
+        var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos");
+        //var response = await _httpClient.GetAsync($"http://localhost:8080/artigos");
         var responseBody = await response.Content.ReadAsStringAsync();
         var artigos = JsonConvert.DeserializeObject<List<Artigo>>(responseBody);
 
