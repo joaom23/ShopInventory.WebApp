@@ -35,7 +35,7 @@ public class ProductsRepository : IProductsRepository
 
     public async Task<int> GetArtigosCountAsync()
     {
-        var response = await _httpClient.GetAsync($"http://localhost:8080/artigos/count");
+        var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos/count");
         var responseBody = await response.Content.ReadAsStringAsync();
         var count = JsonConvert.DeserializeObject<int>(responseBody);
         return count;

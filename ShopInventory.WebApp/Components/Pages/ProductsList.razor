@@ -49,7 +49,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if(productsCount == null)
+        if (productsCount == null)
         {
             productsCount = await ViewProductsCountUseCase.ExecuteAsync(); 
         }
