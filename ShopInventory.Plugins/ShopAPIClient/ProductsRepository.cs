@@ -20,11 +20,11 @@ public class ProductsRepository : IProductsRepository
         
         if (name == null)
         {
-            response = await _httpClient.GetAsync("http://localhost:8080/artigos");
+            response = await _httpClient.GetAsync("http://apishopinventory.ddns.net:8080/artigos");
         }
         else
         {
-            response = await _httpClient.GetAsync($"http://localhost:8080/artigos?name={name}");
+            response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos?name={name}");
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
