@@ -3,6 +3,8 @@ using ShopInventory.UseCases.Interfaces;
 using ShopInventory.UseCases.Products;
 using ShopInventory.UseCases.Products.Interfaces;
 using ShopInventory.WebApp.Components;
+using ShopInventory.WebApp.Services;
+using ShopInventory.WebApp.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IViewListOfProductsUseCase, ViewListOfProductsUseCase>();
 builder.Services.AddScoped<IViewProductsCountUseCase, ViewProductsCountUseCase>();
+builder.Services.AddScoped<ICartState, CartState>();
 
 var app = builder.Build();
 

@@ -1,10 +1,13 @@
-﻿@page "/products"
+﻿@page "/produtos"
 
 @inject IViewListOfProductsUseCase ViewListOfProductsUseCase
 @inject IViewProductsCountUseCase ViewProductsCountUseCase
+@inject ICartState CartService
 @inject NavigationManager NavigationManager
-@attribute [StreamRendering]
 @rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<PageTitle>Produtos</PageTitle>
 
 <SearchProductComponent OnSearchProduct="SeachProduct"></SearchProductComponent>
 
@@ -33,7 +36,7 @@ else
                     <td>@product.Quantity</td>
                     <td>@(product.Price + "€")</td>
                     <td>
-                        <button type="button" class="btn btn-light">Adicionar</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => AddToCart(product)">Adicionar</button>
                     </td>
                 </tr>
             }
@@ -43,7 +46,6 @@ else
 
 
 @code {
-
     private List<Artigo>? products;
     private int? productsCount;
 
@@ -60,5 +62,10 @@ else
     private async Task SeachProduct(string name)
     {
         products = (await ViewListOfProductsUseCase.ExecuteAsync(name))!.ToList();
+    }
+
+    private void AddToCart(Artigo artigo)
+    {
+        CartService.AddItem(artigo);
     }
 }

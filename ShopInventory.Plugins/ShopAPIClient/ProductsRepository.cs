@@ -14,17 +14,18 @@ public class ProductsRepository : IProductsRepository
     }
 
     public async Task<IEnumerable<Artigo>?> GetArtigosAsync(string? name = null)
-    {
-        //var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos");
+    {        
         HttpResponseMessage? response;
         
         if (name == null)
         {
+            //response = await _httpClient.GetAsync("http://localhost:8080/artigos");
             response = await _httpClient.GetAsync("http://apishopinventory.ddns.net:8080/artigos");
         }
         else
         {
             response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos?name={name}");
+            //response = await _httpClient.GetAsync($"http://localhost:8080/artigos?name={name}");
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
@@ -36,6 +37,7 @@ public class ProductsRepository : IProductsRepository
     public async Task<int> GetArtigosCountAsync()
     {
         var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos/count");
+        //var response = await _httpClient.GetAsync($"http://localhost:8080/artigos/count");
         var responseBody = await response.Content.ReadAsStringAsync();
         var count = JsonConvert.DeserializeObject<int>(responseBody);
         return count;

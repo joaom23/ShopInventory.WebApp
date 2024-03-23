@@ -1,0 +1,35 @@
+﻿@inject ICartState CartService
+@implements IDisposable
+@rendermode InteractiveServer
+
+<a aria-label="cart" href="carrinho">
+<img role="presentation" src="icons/cart.svg" />
+    @if (totalQuantity > 0)
+{
+    <span class="cart-badge">@totalQuantity</span>
+}
+</a>
+
+@code {
+    IDisposable? basketStateSubscription;
+    private ICollection<Artigo>? _cartArtigos;
+    // private double? totalQuantity => _cartArtigos?.Sum(x => x.Quantity);
+    private double? totalQuantity => _cartArtigos?.Count;
+    private int test = 0;
+    protected override void OnInitialized()
+    {
+        basketStateSubscription = CartService.NotifyOnChange(EventCallback.Factory.Create(this, UpdateCart));
+
+        UpdateCart();
+    }
+
+    public void UpdateCart()
+    {
+        _cartArtigos = CartService.FetchArtigosCart();
+    }
+
+    public void Dispose()
+    {
+        basketStateSubscription?.Dispose();
+    }
+}

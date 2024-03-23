@@ -1,0 +1,56 @@
+﻿@page "/carrinho"
+
+@inject ICartState CartState
+@rendermode InteractiveServer
+
+<PageTitle>Carrinho de Compras</PageTitle>
+
+<h3>Carrinho de Compras</h3>
+
+@if (_cartArtigos == null)
+{
+    <div class="spinner-container">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Preço Total: @(_cartArtigos.Sum(x => x.Price) + "€")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _cartArtigos)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>@(product.Price + "€")</td>
+                    <td>
+                        <button type="button" class="btn btn-danger" @onclick="() => RemoveFromCart(product)">Remover</button>
+                        </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ICollection<Artigo>? _cartArtigos;
+    private int? productsCount;
+
+    protected override void OnInitialized()
+    {
+        _cartArtigos = CartState.FetchArtigosCart();
+    }
+
+    private void RemoveFromCart(Artigo artigo)
+    {
+        CartState.RemoveItem(artigo);
+    }
+}

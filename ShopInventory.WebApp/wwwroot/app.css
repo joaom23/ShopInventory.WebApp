@@ -56,3 +56,45 @@ h1:focus {
     align-items: center;
     height: 100vh; 
 }
+
+.cart-badge {
+    display: flex;
+    padding: 0.25rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    border-radius: 20px;
+    border: 1px solid #000;
+    background: #000;
+    color: #FFF;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 0.25rem;
+}
+
+.cart {
+    padding: 0 10rem;
+    display: flex;
+    gap: 6rem;
+}
+
+@media only screen and (max-width: 480px) {
+    .cart {
+        padding: 0 1rem;
+        gap: 1rem;
+        flex-direction: column-reverse
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1024px) {
+    .cart {
+        padding: 0 3rem;
+        gap: 2rem;
+        flex-direction: column-reverse;
+    }
+}
