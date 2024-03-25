@@ -1,7 +1,7 @@
 ﻿
 
 <div class="input-group">
-    <input type="text" class="form-control" placeholder="Insira o nome do produto a procurar" @bind-value=productNameToSearch />
+    <input type="text" class="form-control" placeholder="Insira o nome do produto a procurar" @bind-value=productNameToSearch @onkeypress="KeyPressHandler" />
     <button type="button" class="btn btn-success input-group-text" @onclick="OnSearch">Procurar</button>
 </div>
 
@@ -13,5 +13,13 @@
     public void OnSearch()
     {
         OnSearchProduct.InvokeAsync(productNameToSearch);
+    }
+
+    private void KeyPressHandler(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            OnSearch(); 
+        }
     }
 }

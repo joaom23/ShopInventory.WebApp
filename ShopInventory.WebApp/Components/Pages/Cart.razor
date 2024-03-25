@@ -21,7 +21,7 @@ else
                 <th>Nome</th>
                 <th>Quantidade</th>
                 <th>Preço</th>
-                <th>Preço Total: @(_cartArtigos.Sum(x => x.Price) + "€")</th>
+                <th>Preço Total: @(Math.Round(_cartArtigos.Sum(x => x.Price * x.Quantity), 2).FormatPrice() + "€")</th>
             </tr>
         </thead>
         <tbody>
@@ -29,11 +29,13 @@ else
             {
                 <tr>
                     <td>@product.Name</td>
-                    <td>@product.Quantity</td>
-                    <td>@(product.Price + "€")</td>
+                    <td>
+                        <input type="number" @bind-value=@product.Quantity min="0"/>
+                    </td>
+                    <td>@(Math.Round(product.Price * product.Quantity, 2).FormatPrice() + "€")</td>
                     <td>
                         <button type="button" class="btn btn-danger" @onclick="() => RemoveFromCart(product)">Remover</button>
-                        </td>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -41,7 +43,7 @@ else
 }
 
 @code {
-    private ICollection<Artigo>? _cartArtigos;
+    private ICollection<ArtigoCart>? _cartArtigos;
     private int? productsCount;
 
     protected override void OnInitialized()
@@ -49,7 +51,7 @@ else
         _cartArtigos = CartState.FetchArtigosCart();
     }
 
-    private void RemoveFromCart(Artigo artigo)
+    private void RemoveFromCart(ArtigoCart artigo)
     {
         CartState.RemoveItem(artigo);
     }

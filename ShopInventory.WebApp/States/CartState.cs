@@ -2,17 +2,18 @@
 using ShopInventory.CoreBusiness;
 using ShopInventory.WebApp.Services.Interfaces;
 using ShopInventory.WebApp.States.Events;
+using ShopInventory.WebApp.ViewModels;
 
 namespace ShopInventory.WebApp.Services;
 
 public class CartState : ICartState
 {
-    private readonly ICollection<Artigo> _artigoBasket;
+    private readonly ICollection<ArtigoCart> _artigoCart;
     public HashSet<BasketStateChangedSubscription> ChangeSubscriptions = new();
 
     public CartState()
     {
-        _artigoBasket = [];
+        _artigoCart = [];
     }
 
     public IDisposable NotifyOnChange(EventCallback callback)
@@ -22,22 +23,37 @@ public class CartState : ICartState
         return subscription;
     }
 
-    public ICollection<Artigo>? FetchArtigosCart()
+    public ICollection<ArtigoCart>? FetchArtigosCart()
     {
-        return _artigoBasket;
+        return _artigoCart;
     }
 
     public void AddItem(Artigo artigo)
     {
-        _artigoBasket.Add(artigo);
+        var artigoInTheBasket = _artigoCart.FirstOrDefault(x => x.Name == artigo.Name);
+
+        if (artigoInTheBasket == null) 
+        {
+            _artigoCart.Add(new ArtigoCart
+            {
+                Price = artigo.Price,
+                Quantity = 1, 
+                Name = artigo.Name,
+            });
+        }
+        else
+        {
+            artigoInTheBasket.Quantity++;
+        }
+
         NotifyChangeSubscribers();
     }
 
     private Task NotifyChangeSubscribers() => Task.WhenAll(ChangeSubscriptions.Select(s => s.NotifyAsync()));
 
-    public void RemoveItem(Artigo artigo)
+    public void RemoveItem(ArtigoCart artigo)
     {
-        _artigoBasket.Remove(artigo);
+        _artigoCart.Remove(artigo);
         NotifyChangeSubscribers();
     }
 }

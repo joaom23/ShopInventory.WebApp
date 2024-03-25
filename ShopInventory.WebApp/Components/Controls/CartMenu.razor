@@ -12,7 +12,7 @@
 
 @code {
     IDisposable? basketStateSubscription;
-    private ICollection<Artigo>? _cartArtigos;
+    private ICollection<ArtigoCart>? _cartArtigos;
     // private double? totalQuantity => _cartArtigos?.Sum(x => x.Quantity);
     private double? totalQuantity => _cartArtigos?.Count;
     private int test = 0;

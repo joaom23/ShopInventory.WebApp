@@ -34,9 +34,16 @@ else
                 <tr>
                     <td>@product.Name</td>
                     <td>@product.Quantity</td>
-                    <td>@(product.Price + "€")</td>
+                    <td>@(product.Price.FormatPrice() + "€")</td>
                     <td>
-                        <button type="button" class="btn btn-primary" @onclick="() => AddToCart(product)">Adicionar</button>
+                        @if (product.Quantity == 0)
+                        {
+                            <span class="text-danger">Quantidade esgotada</span>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="() => AddToCart(product)">Adicionar</button>
+                        }
                     </td>
                 </tr>
             }
