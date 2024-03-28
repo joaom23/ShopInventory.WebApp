@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ShopInventory.WebApp.ViewModels;
+﻿namespace ShopInventory.CoreBusiness;
 
 public class ArtigoCart
 {

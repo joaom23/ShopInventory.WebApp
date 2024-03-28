@@ -1,3 +1,4 @@
+using ShopInventory.Plugins.EmailSender;
 using ShopInventory.Plugins.ShopAPIClient;
 using ShopInventory.UseCases.Interfaces;
 using ShopInventory.UseCases.Products;
@@ -16,6 +17,7 @@ builder.Services.AddSingleton<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IViewListOfProductsUseCase, ViewListOfProductsUseCase>();
 builder.Services.AddScoped<IViewProductsCountUseCase, ViewProductsCountUseCase>();
 builder.Services.AddScoped<ICartState, CartState>();
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

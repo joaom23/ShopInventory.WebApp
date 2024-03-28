@@ -2,7 +2,6 @@
 using ShopInventory.CoreBusiness;
 using ShopInventory.WebApp.Services.Interfaces;
 using ShopInventory.WebApp.States.Events;
-using ShopInventory.WebApp.ViewModels;
 
 namespace ShopInventory.WebApp.Services;
 
@@ -49,11 +48,18 @@ public class CartState : ICartState
         NotifyChangeSubscribers();
     }
 
-    private Task NotifyChangeSubscribers() => Task.WhenAll(ChangeSubscriptions.Select(s => s.NotifyAsync()));
 
     public void RemoveItem(ArtigoCart artigo)
     {
         _artigoCart.Remove(artigo);
         NotifyChangeSubscribers();
     }
+
+    public void RemoveAllItems()
+    {
+        _artigoCart.Clear();
+        NotifyChangeSubscribers();
+    }
+
+    private Task NotifyChangeSubscribers() => Task.WhenAll(ChangeSubscriptions.Select(s => s.NotifyAsync()));
 }

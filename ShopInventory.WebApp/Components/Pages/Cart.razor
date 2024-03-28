@@ -1,30 +1,39 @@
 ﻿@page "/carrinho"
 
 @inject ICartState CartState
+@inject IEmailSender EmailSender
+@inject IJSRuntime Runtime
+
 @rendermode InteractiveServer
 
 <PageTitle>Carrinho de Compras</PageTitle>
 
+<p id="title"></p>
 <h3>Carrinho de Compras</h3>
 
-@if (_cartArtigos == null)
+@if (_show)
 {
-    <div class="spinner-container">
-        <div class="spinner-border" role="status"></div>
-    </div>
+    <AlertMessage Message="@_message" Type="@_alertType" />
 }
-else
-{
-    <table class="table">
-        <thead>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+            <th>Preço</th>
+            <th>Preço Total: @(_totalPrice + "€")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(_cartArtigos == null || _cartArtigos.Count == 0)
+        {
             <tr>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th>Preço</th>
-                <th>Preço Total: @(Math.Round(_cartArtigos.Sum(x => x.Price * x.Quantity), 2).FormatPrice() + "€")</th>
+                <strong>Carrinho vazio</strong>
             </tr>
-        </thead>
-        <tbody>
+        }
+        else
+        {
             @foreach (var product in _cartArtigos)
             {
                 <tr>
@@ -38,21 +47,96 @@ else
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>
+
+<br />
+<div style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding: 20px; width: 30%">
+    <input type="text" placeholder="Nome de cliente" @bind-value=@_clientName style="width: 90%"/>
+    <br />
+    <br />
+    <button class="btn btn-success" @onclick="async () => await SendOrder()">Encomendar</button>
+</div>
+
+
+<script>
+    window.scrollToAlert = function () {
+        var title = document.getElementById('title');
+        if (title) {
+            title.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+</script>
 
 @code {
     private ICollection<ArtigoCart>? _cartArtigos;
-    private int? productsCount;
+    private double _totalPrice;
+    private string _clientName = string.Empty;
+    private string _message = string.Empty;
+    private AlertType _alertType;
+    private bool _show = false;
 
     protected override void OnInitialized()
     {
         _cartArtigos = CartState.FetchArtigosCart();
+        _totalPrice = CalculateTotalPrice();
     }
 
     private void RemoveFromCart(ArtigoCart artigo)
     {
         CartState.RemoveItem(artigo);
+        _totalPrice = CalculateTotalPrice();
+    }
+
+    private double CalculateTotalPrice()
+    {
+        return Math.Round(_cartArtigos?.Sum(x => x.Price * x.Quantity) ?? 0, 2);
+    }
+
+    private async Task SendOrder()
+    {
+        if (_cartArtigos == null || _cartArtigos.Count == 0)
+        {
+            await ShowAlert("Carrinho está vazio", AlertType.danger);
+            return;
+        }
+
+        if(_cartArtigos.Any(x => x.Quantity <= 0))
+        {
+            await ShowAlert("Artigos com quantidade inválida", AlertType.danger);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_clientName))
+        {
+            await ShowAlert("Insira o nome de cliente", AlertType.danger);
+            return;
+        }
+
+        var emailModel = new EmailModel { Artigos = _cartArtigos, ClientName = _clientName, TotalPrice = _totalPrice };
+
+        var response = await EmailSender.SendEmailAsync(emailModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            CartState.RemoveAllItems();
+            _totalPrice = 0;
+            await ShowAlert("Encomenda enviada com sucesso!", AlertType.success);
+        }
+        else
+        {
+            await ShowAlert("Ocorreu um problema ao submeter a encomenda", AlertType.danger);
+        }
+    }
+
+    private async Task ShowAlert(string message, AlertType alertType)
+    {
+        _show = true;
+        _message = message;
+        _alertType = alertType;
+        await Runtime.InvokeVoidAsync("scrollToAlert");
+        await Task.Delay(5000);
+        _show = false;
     }
 }

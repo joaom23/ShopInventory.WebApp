@@ -53,7 +53,7 @@ else
 
 
 @code {
-    private List<Artigo>? products;
+    private IEnumerable<Artigo>? products;
     private int? productsCount;
 
     protected override async Task OnInitializedAsync()
@@ -63,7 +63,8 @@ else
             productsCount = await ViewProductsCountUseCase.ExecuteAsync(); 
         }
 
-        products = (await ViewListOfProductsUseCase.ExecuteAsync())!.ToList();
+        //products = (await ViewListOfProductsUseCase.ExecuteAsync())!.ToList();
+        products = Enumerable.Range(0, 50).Select(i => new Artigo { Name = "test" + i, Quantity = 10, Price = 10 });
     }
 
     private async Task SeachProduct(string name)

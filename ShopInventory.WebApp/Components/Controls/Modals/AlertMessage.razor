@@ -1,0 +1,13 @@
+﻿
+<div class="alert alert-@Type.ToString() alert-dismissible" role="alert">
+    @* <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button> *@
+    @Message
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    [Parameter]
+    public AlertType Type { get; set; }
+}
