@@ -3,5 +3,5 @@
 namespace ShopInventory.UseCases.Products.Interfaces;
 public interface IViewListOfProductsUseCase
 {
-    Task<IEnumerable<Artigo>?> ExecuteAsync(string? name = null);
+    Task<ArtigosResponse?> ExecuteAsync(string? name = null, int? pageNumber = 1, int? pageSize = 10);
 }

@@ -25,7 +25,7 @@ else
                 <th>Nome</th>
                 <th>Quantidade</th>
                 <th>Preço</th>
-                <th>Total: @productsCount</th>
+                <th>Total: @_productsCount</th>
             </tr>
         </thead>
         <tbody>
@@ -48,32 +48,119 @@ else
                 </tr>
             }
         </tbody>
-    </table> 
-}
+    </table>
+    
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(_currentPage == 1 ? "disabled" : "")">
+                <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await MoveOnePage(MoveToPreviousPage)">Anterior</a>
+            </li>
 
+            @if (_totalPageNumber <= 20) 
+            {
+                @for (int i = 1; i <= _totalPageNumber; i++)
+                {
+                    var currentPage = i;
+                    <li class="page-item @(_currentPage == i ? "active" : "")">
+                        <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await ChangePage(currentPage)">@i</a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="page-item @(_currentPage == 1 ? "active" : "")">
+                    <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await ChangePage(1)">1</a>
+                </li>
+
+                @if (_currentPage > 5)
+                {
+                    <li class="page-item disabled btn-disable-select"><span class="page-link">...</span></li>
+                }
+
+                @for (int i = Math.Max(2, _currentPage - 2); i <= Math.Min(_totalPageNumber - 1, _currentPage + 2); i++)
+                {
+                    var currentPage = i;
+                    <li class="page-item @(_currentPage == i ? "active" : "")">
+                        <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await ChangePage(currentPage)">@i</a>
+                    </li>
+                }
+
+                @if (_currentPage < _totalPageNumber - 4)
+                {
+                    <li class="page-item disabled btn-disable-select"><span class="page-link">...</span></li>
+                }
+
+                <li class="page-item @(_currentPage == _totalPageNumber ? "active" : "")">
+                    <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await ChangePage(_totalPageNumber)">@_totalPageNumber</a>
+                </li>
+            }
+
+            <li class="page-item @(_currentPage == _totalPageNumber ? "disabled" : "")">
+                <a class="page-link btn-disable-select" style="cursor: pointer" @onclick="async () => await MoveOnePage(MoveToNextPage)">Seguinte</a>
+            </li>
+        </ul>
+    </nav>
+}
 
 @code {
     private IEnumerable<Artigo>? products;
-    private int? productsCount;
+    private int? _productsCount;
+    private int _currentPage = 1;
+    private const int MoveToPreviousPage = -1;
+    private const int MoveToNextPage = 1;
+    private const int PageSize = 10;
+    private int _totalPageNumber;
+    private string _nameToSearch = string.Empty;
+
+    private async Task MoveOnePage(int valueToMove)
+    {
+        _currentPage += valueToMove;
+        if (!string.IsNullOrEmpty(_nameToSearch))
+        {
+            await FetchProducts(_nameToSearch);
+        }
+        else
+        {
+            await FetchProducts();
+        }
+    }
+
+    private async Task ChangePage(int page)
+    {
+        _currentPage = page;
+        if (!string.IsNullOrEmpty(_nameToSearch))
+        {
+            await FetchProducts(_nameToSearch);
+        }
+        else
+        {
+            await FetchProducts(); 
+        }
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        if (productsCount == null)
-        {
-            productsCount = await ViewProductsCountUseCase.ExecuteAsync(); 
-        }
-
-        //products = (await ViewListOfProductsUseCase.ExecuteAsync())!.ToList();
-        products = Enumerable.Range(0, 50).Select(i => new Artigo { Name = "test" + i, Quantity = 10, Price = 10 });
+        await FetchProducts();
     }
 
     private async Task SeachProduct(string name)
     {
-        products = (await ViewListOfProductsUseCase.ExecuteAsync(name))!.ToList();
+        _currentPage = 1;
+        _nameToSearch = name;
+        await FetchProducts(name);
     }
 
     private void AddToCart(Artigo artigo)
     {
         CartService.AddItem(artigo);
+    }
+
+    private async Task FetchProducts(string? name = null)
+    {
+        var artigosResponse = await ViewListOfProductsUseCase.ExecuteAsync(name, _currentPage, PageSize);
+        products = artigosResponse!.Artigos;
+        _productsCount = artigosResponse.TotalCount;
+        _totalPageNumber = (int)Math.Ceiling((double)_productsCount / PageSize);
     }
 }

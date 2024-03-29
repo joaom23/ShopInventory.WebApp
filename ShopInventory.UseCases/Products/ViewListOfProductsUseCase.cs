@@ -13,8 +13,8 @@ public class ViewListOfProductsUseCase : IViewListOfProductsUseCase
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<Artigo>?> ExecuteAsync(string? name = null)
+    public async Task<ArtigosResponse?> ExecuteAsync(string? name = null, int? pageNumber = 1, int? pageSize = 1)
     {
-        return await _httpClient.GetArtigosAsync(name);
+        return await _httpClient.GetArtigosAsync(name, pageNumber, pageSize);
     }
 }

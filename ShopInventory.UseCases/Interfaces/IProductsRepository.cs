@@ -4,6 +4,6 @@ namespace ShopInventory.UseCases.Interfaces;
 
 public interface IProductsRepository
 {
-    Task<IEnumerable<Artigo>?> GetArtigosAsync(string? name = null);
+    Task<ArtigosResponse?> GetArtigosAsync(string? name = null, int? pageNumber = 1, int? pageSize = 10);
     Task<int> GetArtigosCountAsync();
 }

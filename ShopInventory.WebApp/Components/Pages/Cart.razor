@@ -135,6 +135,7 @@
         _show = true;
         _message = message;
         _alertType = alertType;
+        StateHasChanged();
         await Runtime.InvokeVoidAsync("scrollToAlert");
         await Task.Delay(5000);
         _show = false;
