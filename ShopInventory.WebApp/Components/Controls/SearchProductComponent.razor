@@ -1,8 +1,7 @@
 ﻿
-
 <div class="input-group">
-    <input type="text" class="form-control" placeholder="Insira o nome do produto a procurar" @bind-value=productNameToSearch @onkeypress="KeyPressHandler" />
-    <button type="button" class="btn btn-success input-group-text" @onclick="OnSearch">Procurar</button>
+    <input type="text" class="form-control" placeholder="Insira o nome do produto a procurar" @bind-value=productNameToSearch @onkeypress="async (e) => await KeyPressHandler(e)" />
+    <button type="button" class="btn btn-success input-group-text" @onclick="async () => await OnSearch()">Procurar</button>
 </div>
 
 @code {
@@ -10,16 +9,17 @@
     [Parameter]
     public EventCallback<string> OnSearchProduct { get; set; }
 
-    public void OnSearch()
+    public async Task OnSearch()
     {
-        OnSearchProduct.InvokeAsync(productNameToSearch);
+        await OnSearchProduct.InvokeAsync(productNameToSearch);
     }
 
-    private void KeyPressHandler(KeyboardEventArgs e)
+    private async Task KeyPressHandler(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            OnSearch(); 
+            await Task.Delay(50);
+            await OnSearch(); 
         }
     }
 }

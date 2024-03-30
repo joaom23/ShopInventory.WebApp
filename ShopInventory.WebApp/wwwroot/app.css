@@ -54,7 +54,7 @@ h1:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; 
+    height: 50vh; 
 }
 
 .cart-badge {
@@ -104,4 +104,22 @@ h1:focus {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+}
+
+.table tbody tr {
+    height: 60px; 
+}
+
+.table tbody tr td {
+    vertical-align: middle; 
+}
+
+.carousel {
+    max-height: 600px; 
+}
+
+.carousel-img {
+    max-height: 600px; 
+    width: auto; 
+    margin: auto;
 }

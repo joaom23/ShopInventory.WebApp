@@ -14,7 +14,6 @@
     IDisposable? basketStateSubscription;
     private ICollection<ArtigoCart>? _cartArtigos;
     private double? totalQuantity => _cartArtigos?.Count;
-    private int test = 0;
     protected override void OnInitialized()
     {
         basketStateSubscription = CartService.NotifyOnChange(EventCallback.Factory.Create(this, UpdateCart));
