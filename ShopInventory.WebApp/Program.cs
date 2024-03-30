@@ -4,21 +4,22 @@ using ShopInventory.UseCases.Interfaces;
 using ShopInventory.UseCases.Products;
 using ShopInventory.UseCases.Products.Interfaces;
 using ShopInventory.WebApp.Components;
+using ShopInventory.WebApp.Extentions;
 using ShopInventory.WebApp.Services;
 using ShopInventory.WebApp.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
+services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<IProductsRepository, ProductsRepository>();
-builder.Services.AddScoped<IViewListOfProductsUseCase, ViewListOfProductsUseCase>();
-builder.Services.AddScoped<IViewProductsCountUseCase, ViewProductsCountUseCase>();
-builder.Services.AddScoped<ICartState, CartState>();
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
+services.AddCustomizedHttpClient<IProductsRepository, ProductsRepository>();
+services.AddScoped<IViewListOfProductsUseCase, ViewListOfProductsUseCase>();
+services.AddScoped<IViewProductsCountUseCase, ViewProductsCountUseCase>();
+services.AddScoped<ICartState, CartState>();
+services.AddSingleton<IEmailSender, EmailSender>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

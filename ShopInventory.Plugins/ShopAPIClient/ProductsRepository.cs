@@ -8,24 +8,22 @@ public class ProductsRepository : IProductsRepository
 {
     private readonly HttpClient _httpClient;
 
-    public ProductsRepository()
+    public ProductsRepository(HttpClient httpClient)
     {
-        _httpClient = new HttpClient();
+        _httpClient = httpClient;
     }
 
     public async Task<ArtigosResponse?> GetArtigosAsync(string? name = null, int? pageNumber = 1, int? pageSize = 10)
-    {        
+    {
         HttpResponseMessage? response;
         
         if (name == null)
         {
-            response = await _httpClient.GetAsync($"http://localhost:8080/artigos?pageNumber={pageNumber}&pageSize={pageSize}");
-            //response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos?pageNumber={pageNumber}&pageSize={pageSize}");
+            response = await _httpClient.GetAsync($"/artigos?pageNumber={pageNumber}&pageSize={pageSize}");
         }
         else
-        {
-            //response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos?name={name}&pageNumber={pageNumber}&pageSize={pageSize}");
-            response = await _httpClient.GetAsync($"http://localhost:8080/artigos?name={name}&pageNumber={pageNumber}&pageSize={pageSize}");
+        {           
+            response = await _httpClient.GetAsync($"/artigos?name={name}&pageNumber={pageNumber}&pageSize={pageSize}");
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
@@ -36,8 +34,7 @@ public class ProductsRepository : IProductsRepository
 
     public async Task<int> GetArtigosCountAsync()
     {
-        //var response = await _httpClient.GetAsync($"http://apishopinventory.ddns.net:8080/artigos/count");
-        var response = await _httpClient.GetAsync($"http://localhost:8080/artigos/count");
+        var response = await _httpClient.GetAsync($"/artigos/count");
         var responseBody = await response.Content.ReadAsStringAsync();
         var count = JsonConvert.DeserializeObject<int>(responseBody);
         return count;
