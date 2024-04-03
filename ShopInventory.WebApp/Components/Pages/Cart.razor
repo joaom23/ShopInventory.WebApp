@@ -28,9 +28,9 @@
     <tbody>
         @if(_cartArtigos == null || _cartArtigos.Count == 0)
         {
-            <tr>
-                <strong>Carrinho vazio</strong>
-            </tr>
+        <tr>
+            <strong>Carrinho vazio</strong>
+        </tr>
         }
         else
         {
@@ -39,7 +39,7 @@
                 <tr>
                     <td>@product.Name</td>
                     <td>
-                        <input type="number" @bind-value=@product.Quantity min="0"/>
+                        <input type="number" @bind-value=product.Quantity @bind-value:after="SetTotalPrice" min="0" />
                     </td>
                     <td>@(Math.Round(product.Price * product.Quantity, 2).FormatPrice() + "€")</td>
                     <td>
@@ -80,18 +80,18 @@
     protected override void OnInitialized()
     {
         _cartArtigos = CartState.FetchArtigosCart();
-        _totalPrice = CalculateTotalPrice();
+        SetTotalPrice();
     }
 
     private void RemoveFromCart(ArtigoCart artigo)
     {
         CartState.RemoveItem(artigo);
-        _totalPrice = CalculateTotalPrice();
+        SetTotalPrice();
     }
 
-    private double CalculateTotalPrice()
+    private void SetTotalPrice()
     {
-        return Math.Round(_cartArtigos?.Sum(x => x.Price * x.Quantity) ?? 0, 2);
+        _totalPrice = Math.Round(_cartArtigos?.Sum(x => x.Price * x.Quantity) ?? 0, 2);
     }
 
     private async Task SendOrder()
