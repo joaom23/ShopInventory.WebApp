@@ -4,7 +4,7 @@
 @inject IViewProductsCountUseCase ViewProductsCountUseCase
 @inject ICartState CartService
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @attribute [StreamRendering]
 
 <PageTitle>Produtos</PageTitle>
